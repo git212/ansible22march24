@@ -1,0 +1,23 @@
+- hosts: nginx
+  become: True
+  tasks:
+    - name: Install nginx server
+      dnf:
+        name: nginx
+        state: present
+    - name: Ensure nginx service is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: True
+    - name: Copy Config file
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/conf.d/nginx.conf
+      notify:
+        - restart
+  handlers:
+    - name: restart 
+      service:
+        name: nginx
+        state: restarted
